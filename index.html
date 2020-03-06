@@ -1,0 +1,86 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>CrispyTaytorTot's Twitch Chat Listener</title>
+    <meta name="description" content="CrispyTaytorTot's Twitch Chat Listener">
+    <meta name="author" content="CrispyTaytorTot">
+
+    <link rel="stylesheet" href="index.css">
+    <!--<script src="./listener.js"></script>-->
+	<script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+		/*
+			A small script to check for the redemption of Twitch Channel Points.
+			Made for Taylor with love by Zach.
+		*/
+        
+		const CUSTOM_REWARD_ID_DICTIONARY = {
+			"CHANGEMETAYLOR01": {
+				"name": "Boost",
+				"action": boostAction
+			},
+			"CHANGEMETAYLOR02": {
+				"name": "FA Toggle",
+				"action": toggleFlightAssist
+			},
+			"f0724737-07e7-4787-8bf8-241556c36352": {
+				"name": "Custom Welcome",
+				"action": boostAction
+				//"action": customWelcome
+			}
+		};
+        
+		function boostAction() {
+			console.log(`Press BOOST button!`);
+            fetch('http://localhost:8088/?boost', {
+                mode: 'no-cors'
+            }).then((response) => {})
+            .catch((error) => {});
+		}
+
+		function toggleFlightAssist() {
+			console.log(`Turn flight assist OFF!`);
+            fetch('http://localhost:8088/?fatoggle', {
+                mode: 'no-cors'
+            }).then((response) => {})
+            .catch((error) => {});
+		}
+
+		function customWelcome() {
+			console.log(`Someone redeemed "Custom Welcome"!`);
+		}
+	
+		ComfyJS.onChat = ( user, message, flags, self, extra ) => {
+			// Uncomment this if you need more debugging information!
+            //console.log(`Got Chat!\nUser: ${user}\nMessage: ${message}\nFlags: ${JSON.stringify(flags)}\nSelf: ${self}\nExtra: ${JSON.stringify(extra)}`);
+            
+			
+			if (flags && flags.customReward && extra && extra.customRewardId) {
+				let rewardID = extra.customRewardId;
+			
+				console.log(`Someone redeemed a custom reward with ID: \`${rewardID}\`.\nTheir chat message was: "${message}"`);
+			
+				if (!CUSTOM_REWARD_ID_DICTIONARY[rewardID]) {
+					console.error(`There is no reward associated with the Custom Reward ID \`${rewardID}\``);
+					return;
+				}
+			
+				if (!CUSTOM_REWARD_ID_DICTIONARY[rewardID].action) {
+					console.error(`There is no action associated with the Custom Reward ID \`${rewardID}\``);
+					return;
+				}
+				
+				CUSTOM_REWARD_ID_DICTIONARY[rewardID].action();
+			}
+		}
+
+		ComfyJS.Init("CrispyTaytorTot");
+    </script>
+</body>
+</html>
