@@ -2,6 +2,7 @@
 """A Python server that listens for specific requests made from the `chatListener` HTML's scripts, then acts on them.
 """
 
+import time
 from http.server import BaseHTTPRequestHandler
 from urllib import parse
 from pynput.keyboard import Key, Controller
@@ -15,6 +16,8 @@ def customRewardAction01():
     keyboard.press(Key.alt_l)
     keyboard.press(Key.alt_r)
     keyboard.press('e')
+    # Make sure to sleep here, or else some applications might not recognize the keypress.
+    time.sleep(0.3)
     keyboard.release('e')
     keyboard.release(Key.alt_r)
     keyboard.release(Key.alt_l)
@@ -27,6 +30,7 @@ def customRewardAction02():
     keyboard.press(Key.alt_l)
     keyboard.press(Key.shift_r)
     keyboard.press('e')
+    # Make sure to sleep here, or else some applications might not recognize the keypress.
     keyboard.release('e')
     keyboard.release(Key.shift_r)
     keyboard.release(Key.alt_l)
